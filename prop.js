@@ -24,6 +24,9 @@ function MAP(a,f,o){
 
 var _Prop={
   _ref:function(k){
+    if(!(k in this && __kind(this[k])==="dict"
+         && typeof this[k].set==="function")){
+      return undefined}
     __assert(k in this && __kind(this[k])==="dict"
              && typeof this[k].set==="function")
     return this[k]},
@@ -49,6 +52,7 @@ var _Prop={
         else if(1<path.length-i){
           return this._setN(path,v,i)}
         else{
+          return undefined
           console.log(arguments)
           throw "bad path match"}}
       else if(tp==="string"){
@@ -59,6 +63,8 @@ var _Prop={
       r[k]=this._set1(k,v[k])}
     return r},
   _set1_0:function(k,v){
+    if(!(k in this)){
+      return undefined}
     __assert(k in this)
     if(__kind(this[k]==="dict")
        && typeof this[k].set==="function"){
@@ -84,10 +90,16 @@ var _Prop={
     __assert(1<path.length-i)
     if(path.length-i===2){
       var p=this._ref(path[i])
-      return p._set1(path[i+1],v)}
+      if(p){
+        return p._set1(path[i+1],v)}
+      else{
+        return undefined}}
     else if(2<path.length-i){
       var p=this._ref(path[i])
-      return p._setN(path,v,i+1)}},
+      if(p){
+        return p._setN(path,v,i+1)}
+      else{
+        return undefined}}},
   set:function(path,v,i){
     return this._set_map(null,arguments)},
   //================
