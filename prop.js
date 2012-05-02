@@ -15,12 +15,12 @@ function __kind(o){
   else{
     return "atom"}}
 
-
 function MAP(a,f,o){
   var r=[]
   for(var i=0,l=a.length;i<l;i++){
     r.push(f.call(o,a[i],i))}
   return r}
+
 
 var _Prop={
   _ref:function(k){
@@ -90,14 +90,7 @@ var _Prop={
       return p._setN(path,v,i+1)}},
   set:function(path,v,i){
     return this._set_map(null,arguments)},
-
-
-
-
-
-
-
-
+  //================
   _get0:function(){
     var r={}
     for(var k in this){
@@ -147,14 +140,6 @@ var _Prop={
       e1._maps={}}
     e1._maps[this._id]=this
     this._maps[e1._id]=e1}}
-
-
-
-
-
-
-
-
 
 
 var Prop={
@@ -240,145 +225,8 @@ function __new(inst,dd,_supr,_k){
   }}
 
 
-
-
-function __new3(inst,dd){
-  var supr=_Prop
-  if(!inst){
-    inst={__proto__:_Prop}
-    inst.__first=inst}
-  MAP(dd,function(d,i){
-    if(typeof d==="function"){
-      d=d(inst,supr)}
-    __assert(__kind(d)==="dict")
-    supr=d
-    __ext(inst,d)})
-  dbg&&console.log("return:!!!!!!!!!!!!!!!!!")
-  dbg&&__log(inst)
-  return inst
-  //================
-  function __ext(i0,e0){
-    var id=__uid()
-    dbg&&uu.push(id)
-    dbg&&console.log(uu,">>>>>>>")
-    dbg&&console.log("i0 ===========")
-    dbg&&__log(i0)
-    dbg&&console.log("e0 ===========")
-    dbg&&__log(e0)
-    for(var k in e0){
-      if(__kind(e0[k])==="dict"){
-        dbg&&console.log("enter",k)
-        if(k in i0){
-          __assert(__kind(i0[k])==="dict")}
-        else{
-          if(k[0]==="_"){
-            if(dbg){
-              i0[k]={_id:__uid()}
-              i0[k].__first=i0[k]}
-            else{
-              i0[k]={}
-              i0[k].__first=i0[k]}}
-          else{
-            if(dbg){
-              i0[k]={id:__uid(),__proto__:_Prop}
-              i0[k].__first=i0[k]}
-            else{
-              i0[k]={__proto__:_Prop}
-              i0[k].__first=i0[k]}}}
-        if(typeof e0k.__new==="function"){
-          e0[k]=e0k.__new(i0[k])}
-        else{
-          __ext(i0[k],e0[k])}}
-      else{
-        __assert(__kind(i0[k])!=="dict")}}
-    dbg&&console.log(uu)
-    dbg&&console.log("---- i0 ===========")
-    dbg&&__log(i0)
-    dbg&&console.log("---- i0.p ===========")
-    dbg&&__log(i0.__proto__)
-    dbg&&console.log("---- e0 ===========")
-    dbg&&__log(e0)
-    if(e0.__first){
-      e0.__first.__proto__=i0.__proto__}
-    else{
-      e0.__proto__=i0.__proto__}
-    i0.__proto__=e0
-    dbg&&uu.pop()
-  }}
-
-
-
 function __uid(){
   return (Math.random()*0x100000000).toString(36)}
-
-
-
-function __new2(inst,dd){
-  var supr=_Prop
-  MAP(dd,function(d,i){
-    if(typeof d==="function"){
-      d=d(inst,supr)}
-    __ext(inst,d)
-    supr=d})
-  return inst
-  //================
-  function __ext(i0,e0){
-    for(var k in e0){
-      if(__kind(e0[k])==="dict"){
-        var e0k=e0[k]
-        if(k in i0){
-          __assert(__kind(i0[k])==="dict")}
-        else{
-          if(k[0]==="_"){
-            i0[k]={}}
-          else{
-            i0[k]={__proto__:_Prop}}
-        }
-      }
-    }
-    e0.__first.__proto__=i0.__proto__
-    i0.__proto__=e0
-  }
-  
-}
-
-
-
-
-
-
-
-
-
-
-function __new_(inst,supr,dd){
-  if(!supr){
-    supr=_Prop}
-  var s0=supr
-  MAP(dd,function(d,i){
-    if(typeof d==="function"){
-      var e=d(inst,s0)}
-    else{
-      var e=d}
-    __ext_walk(inst,e)
-    s0=d})
-  return inst
-  //================
-  function __ext_walk(i0,e0){
-    var e1={}
-    for(var k in e0){
-      if(__kind(e0[k])==="dict"){
-        if(typeof e0[k].__new==="function"){
-          e0[k]=e0[k].__new(i[k])
-          
-        }
-        
-      }
-    }
-  }
-
-
-}
 
 
 module.exports={
