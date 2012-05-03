@@ -15,6 +15,7 @@ function __kind(o){
   else{
     return "atom"}}
 
+
 function MAP(a,f,o){
   var r=[]
   for(var i=0,l=a.length;i<l;i++){
@@ -30,9 +31,36 @@ var _Prop={
     __assert(k in this && __kind(this[k])==="dict"
              && typeof this[k].set==="function")
     return this[k]},
+  _set_child:function(args,prefix){
+    return _set.apply(this,args)
+    function _set(path,v,i){
+      var tp=typeof path
+      if(arguments.length===1){
+        return this._map(null,[prefix,arguments[0],0])}
+      else{
+        if(tp==="object"){
+          i=i||0
+          if(path===null||path.length-i===0){
+            return this._map(null,[prefix,v,0])}
+          else if(path.length-i===1){
+            return this._map(null,[prefix.concat([path[i]]),v,0])
+            return this._set1(path[i],v)}
+          else if(1<path.length-i){
+            return this._map(null,[prefix.concat(path.slice(i)),v,0])
+            return this._setN(path,v,i)}
+          else{
+            return undefined
+            console.log(arguments)
+            throw "bad path match"}}
+        else if(tp==="string"){
+          return this._map(null,[prefix.concat([path]),v,0])
+          return this._set1(path,v)}}}},
   _set_map:function(map,args){
     var r=this._set.apply(this,args)
-    this._maps && this._map(map,args)
+    if(this.__root){
+      this.__root._set_child(args,this.__prefix)}
+    else{
+      this._maps && this._map(map,args)}
     return r},
   _map:function(map,args){
     for(var mid in this._maps){
@@ -116,7 +144,8 @@ var _Prop={
       return this[k].get()}
     else{
       if(!(typeof this[k]==="function"
-           || (k[0]==="_" && k!=="_id"))){
+           //|| (k[0]==="_" && k!=="_id")
+          )){
         return this[k]}}},
   _getN:function(path,i){
     __assert(1<path.length-i)
@@ -176,10 +205,11 @@ var Prop={
 var uu=[]
 var dbg=0
 
-function __new(inst,dd,_supr,_k){
+function __new(inst,dd,_supr,_k,_root,_prefix){
   var supr=_Prop
   if(!inst){
-    inst={__proto__:_Prop}}
+    inst={__proto__:_Prop}
+    _root=inst}
   MAP(dd,function(d,i){
     if(typeof d==="function"){
       d=d(inst,supr)}
@@ -233,8 +263,7 @@ function __new(inst,dd,_supr,_k){
     dbg&&__log(e0)
     e0.__proto__=i0.__proto__
     i0.__proto__=e0
-    dbg&&console.log("<<<<<<",uu.pop())
-  }}
+    dbg&&console.log("<<<<<<",uu.pop())}}
 
 
 function __uid(){
@@ -242,6 +271,7 @@ function __uid(){
 
 
 module.exports={
+  __uid:__uid,
   Prop:Prop}
 
 
