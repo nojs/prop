@@ -32,6 +32,7 @@ var _Prop={
              && typeof this[k].set==="function")
     return this[k]},
   _set_child:function(args,prefix){
+    //console.log(JSON.stringify(arguments))
     return _set.apply(this,args)
     function _set(path,v,i){
       var tp=typeof path
@@ -56,16 +57,18 @@ var _Prop={
           return this._map(null,[prefix.concat([path]),v,0])
           return this._set1(path,v)}}}},
   _set_map:function(map,args){
+    if(this.__prefix){
+      var p=this.__prefix.slice()}
     var r=this._set.apply(this,args)
     if(this.__root){
-      this.__root._set_child(args,this.__prefix)}
+      this.__root._set_child(args,p)}
     else{
-      this._maps && this._map(map,args)}
+      this.__maps && this._map(map,args)}
     return r},
   _map:function(map,args){
-    for(var mid in this._maps){
-      if(map!==this._maps[mid]){
-        this._maps[mid]._set_map(this,args)}}},
+    for(var mid in this.__maps){
+      if(map!==this.__maps[mid]){
+        this.__maps[mid]._set_map(this,args)}}},
   _set:function(path,v,i){
     var tp=typeof path
     if(arguments.length===1){
@@ -106,7 +109,7 @@ var _Prop={
   _set1_:function(k,v){
     if(__kind(this[k])==="dict"
        && typeof this[k].set==="function"){
-        return this[k].set(v)}
+        return this[k]._set(v)}
     else if(k in this){
       return this[k]=v}},
   _set1:function(k,v){
@@ -134,18 +137,18 @@ var _Prop={
   _get0:function(){
     var r={}
     for(var k in this){
-      if(typeof this[k]!=="function"){
+      if(!(typeof this[k]==="function"
+           || (k[0]==="_"&&k[1]==="_"))){
         r[k]=this._get1(k)}}
     return r},
   _get1:function(k){
     __assert(k in this)
-    if(__kind(this[k]==="dict")
+    if(__kind(this[k])==="dict"
        && typeof this[k].get==="function"){
       return this[k].get()}
     else{
       if(!(typeof this[k]==="function"
-           //|| (k[0]==="_" && k!=="_id")
-          )){
+           || (k[0]==="_"&&k[1]==="_"))){
         return this[k]}}},
   _getN:function(path,i){
     __assert(1<path.length-i)
@@ -175,12 +178,12 @@ var _Prop={
         return this._get1(path)}}},
   //================
   map:function(e1){
-    if(!this._maps){
-      this._maps={}}
-    if(!e1._maps){
-      e1._maps={}}
-    e1._maps[this._id]=this
-    this._maps[e1._id]=e1}}
+    if(!this.__maps){
+      this.__maps={}}
+    if(!e1.__maps){
+      e1.__maps={}}
+    e1.__maps[this._id]=this
+    this.__maps[e1._id]=e1}}
 
 
 var Prop={
@@ -209,7 +212,8 @@ function __new(inst,dd,_supr,_k,_root,_prefix){
   var supr=_Prop
   if(!inst){
     inst={__proto__:_Prop}
-    _root=inst}
+    _root=inst
+    _prefix=[]}
   MAP(dd,function(d,i){
     if(typeof d==="function"){
       d=d(inst,supr)}
@@ -238,18 +242,23 @@ function __new(inst,dd,_supr,_k,_root,_prefix){
         if(k in i0){
           __assert(__kind(i0[k])==="dict")}
         else{
-          if(k[0]==="_"){
+          if(k[0]==="_" && k[1]==="_"){
             if(dbg){
               i0[k]={_id:__uid()}}
             else{
               i0[k]={}}}
           else{
             if(dbg){
-              i0[k]={id:__uid(),__proto__:_Prop}}
+              i0[k]={id:__uid(),
+                     __proto__:_Prop,
+                     __root:_root,
+                     __prefix:_prefix.concat([k])}}
             else{
-              i0[k]={__proto__:_Prop}}}}
+              i0[k]={__proto__:_Prop,
+                     __root:_root,
+                     __prefix:_prefix.concat([k])}}}}
         if(typeof e0k.__new==="function"){
-          __new(i0[k],e0k._defs,e0,k)}
+          __new(i0[k],e0k._defs,e0,k,_root,_prefix.concat([k]))}
         else{
           __ext(i0[k],e0k)}}
       else{
