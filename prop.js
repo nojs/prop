@@ -56,19 +56,21 @@ var _Prop={
         else if(tp==="string"){
           return this._map(null,[prefix.concat([path]),v,0])
           return this._set1(path,v)}}}},
-  _set_map:function(map,args){
+  _set_map:function(map,args,v,mapped){
     if(this.__prefix){
       var p=this.__prefix.slice()}
+    if(mapped&&args.length){
+      args[args.length-1]=v}
     var r=this._set.apply(this,args)
     if(this.__root){
       this.__root._set_child(args,p)}
     else{
-      this.__maps && this._map(map,args)}
+      this.__maps && this._map(map,args,r,true)}
     return r},
-  _map:function(map,args){
+  _map:function(map,args,r,mapped){
     for(var mid in this.__maps){
       if(map!==this.__maps[mid]){
-        this.__maps[mid]._set_map(this,args)}}},
+        this.__maps[mid]._set_map(this,args,r,mapped)}}},
   _set:function(path,v,i){
     var tp=typeof path
     if(arguments.length===1){
